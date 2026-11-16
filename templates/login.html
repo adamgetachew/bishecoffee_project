@@ -1,0 +1,22 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Private Management</title>
+    <link rel="stylesheet" href="{{url_for('static',filename='style.css')}}">
+</head>
+
+<body>
+    <main class="private">
+        <section class="panel"><img src="{{url_for('static',filename='bishe-logo.png')}}">
+            <h1>Private Management</h1>{% with m=get_flashed_messages() %}{% for x in m %}<p class="alert">{{x}}
+            </p>{%
+            endfor %}{% endwith %}<form method="post"><input type="password" name="password" placeholder="Password"
+                    required><button class="gold">Continue</button></form>
+        </section>
+    </main>
+</body>
+
+</html>

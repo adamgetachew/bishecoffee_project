@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Bishe Coffee | Product Management</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<header class="topbar">
+  <a class="brand" href="{{ url_for('menu') }}">
+    <img src="{{ url_for('static', filename='bishe-logo.png') }}" alt="Bishe Coffee">
+    <span class="brand-text">
+      <b>BISHE COFFEE</b>
+      <small>FROM THE BIRTHPLACE OF COFFEE</small>
+    </span>
+  </a>
+  <div class="title-bar-center">PRODUCT MANAGEMENT</div>
+  <a class="logout" href="{{ url_for('logout') }}">Exit</a>
+</header>
+
+<main class="management">
+  <section class="manage-panel">
+    <div class="management-heading">
+      <img class="management-logo" src="{{ url_for('static', filename='bishe-logo.png') }}" alt="Bishe Coffee">
+      <div>
+        <span class="eyebrow">BISHE COFFEE</span>
+        <h1 id="form-title">Add Product</h1>
+        <p>Upload a product image, set the price and update your digital menu.</p>
+      </div>
+    </div>
+
+    <form action="{{ url_for('save_product') }}" method="post" enctype="multipart/form-data" class="form" id="product-form">
+      <input type="hidden" name="id" id="product-id">
+
+      <div class="form-grid">
+        <input name="name" id="product-name" placeholder="Product name" required>
+        <input name="amharic" id="product-amharic" placeholder="የምርት ስም">
+        <input name="price" id="product-price" type="number" min="0" step="0.01" placeholder="Price in ETB" required>
+        <select name="category" id="product-category">
+          {% for c in categories %}<option>{{ c }}</option>{% endfor %}
+        </select>
+      </div>
+
+      <label class="upload-box">
+        <span>📷 Upload Product Image</span>
+        <small>PNG, JPG, JPEG, WEBP or GIF</small>
+        <input type="file" name="image" accept="image/png,image/jpeg,image/webp,image/gif">
+      </label>
+
+      <input name="image_url" id="product-image-url" placeholder="Or paste an image URL">
+      <textarea name="description" id="product-description" placeholder="Product description"></textarea>
+
+      <div class="form-actions">
+        <button class="gold" type="submit" id="save-button">＋ Add Product</button>
+        <button class="secondary-btn" type="button" onclick="resetForm()">Cancel / Clear</button>
+      </div>
+    </form>
+  </section>
+
+  <section class="manage-panel">
+    <div class="list-heading">
+      <div>
+        <span class="eyebrow">MENU PRODUCTS</span>
+        <h2>Manage Products</h2>
+      </div>
+      <span class="product-count">{{ products|length }} Products</span>
+    </div>
+
+    <div class="product-management-list">
+      {% for p in products %}
+      <article class="manage-product-card">
+        <img src="{{ p['image'] or url_for('static', filename='bishe-logo.png') }}"
+             alt="{{ p['name'] }}"
+             onerror="this.src='{{ url_for('static', filename='bishe-logo.png') }}'">
+        <div class="manage-product-info">
+          <span class="product-category">{{ p['category'] }}</span>
+          <h3>{{ p['name'] }}</h3>
+          <p>{{ p['amharic'] }}</p>
+          <strong>{{ "{:,.0f}".format(p['price']) }} ETB</strong>
+        </div>
+
+        <div class="product-actions">
+          <button class="edit-btn" type="button"
+            onclick='editProduct({{ {
+              "id": p["id"],
+              "name": p["name"],
+              "amharic": p["amharic"] or "",
+              "price": p["price"],
+              "category": p["category"],
+              "image": p["image"] or "",
+              "description": p["description"] or ""
+            }|tojson }})'>✎ Edit</button>
+
+          <form method="post" action="{{ url_for('delete_product', pid=p['id']) }}"
+                onsubmit="return confirm('Delete {{ p['name']|e }} from the menu?')">
+            <button class="danger" type="submit">🗑 Delete</button>
+          </form>
+        </div>
+      </article>
+      {% else %}
+      <div class="empty">No products yet. Add your first product above.</div>
+      {% endfor %}
+    </div>
+  </section>
+</main>
+
+<script>
+function editProduct(p) {
+  document.getElementById('product-id').value = p.id;
+  document.getElementById('product-name').value = p.name || '';
+  document.getElementById('product-amharic').value = p.amharic || '';
+  document.getElementById('product-price').value = p.price || '';
+  document.getElementById('product-category').value = p.category || 'Coffee';
+  document.getElementById('product-image-url').value = p.image || '';
+  document.getElementById('product-description').value = p.description || '';
+  document.getElementById('form-title').textContent = 'Edit Product';
+  document.getElementById('save-button').textContent = '✓ Save Changes';
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+function resetForm() {
+  document.getElementById('product-form').reset();
+  document.getElementById('product-id').value = '';
+  document.getElementById('form-title').textContent = 'Add Product';
+  document.getElementById('save-button').textContent = '＋ Add Product';
+}
+</script>
+</body>
+</html>

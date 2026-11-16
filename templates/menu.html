@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Bishe Coffee | Digital Menu</title>
+    <link rel="stylesheet" href="{{url_for('static',filename='style.css')}}">
+</head>
+
+<body>
+    <header><a class="brand" href="/"><img src="{{url_for('static',filename='bishe-logo.png')}}"><span><b>BISHE
+                    COFFEE</b><small>FROM THE BIRTHPLACE OF COFFEE</small></span></a></header>
+    <section class="hero"><img src="{{url_for('static',filename='bishe-logo.png')}}">
+        <h1>Bishe Coffee</h1>
+        <p>From the Birthplace of Coffee</p><small>Our Digital Menu</small>
+    </section>
+    <main>
+        <form class="search"><input name="q" value="{{q}}"
+                placeholder="Search coffee, food, drinks..."><button>Search</button></form>
+        <nav><a class="{{'active' if active=='All'}}" href="/?q={{q}}">All</a>{% for c in categories %}<a
+                class="{{'active' if active==c}}" href="/?category={{c}}&q={{q}}">{{c}}</a>{% endfor %}</nav>
+        <section class="menu-info-strip">
+            <div><span>🪶</span><b>Ethiopian Coffee</b><small>Birthplace of coffee</small></div>
+            <div><span>✦</span><b>Premium Quality</b><small>Selected ingredients</small></div>
+            <div><span>♡</span><b>Made Fresh</b><small>Prepared with care</small></div>
+        </section>
+        <section class="grid">{% for p in products %}<article class="card">
+                <img src="{{p.image or url_for('static',filename='bishe-logo.png')}}"
+                    onerror="this.src='{{url_for('static',filename='bishe-logo.png')}}'">
+                <div><label>{{p.category}}</label>
+                    <h2>{{p.name}}</h2><em>{{p.amharic}}</em>
+                    <p>{{p.description}}</p><strong>{{'{:,.0f}'.format(p.price)}} ETB</strong>
+                </div>
+            </article>{% else %}<p>No products found.</p>{% endfor %}</section>
+
+        <section class="payment-card">
+            <div><span class="eyebrow">PAYMENT METHODS</span>
+                <h2>Pay for your Bishe Coffee order</h2>
+                <p>Use any of the payment accounts below and send your payment receipt to Bishe Coffee.</p>
+            </div>
+            <div class="payment-grid">
+                <div class="payment-item"><b>CBE</b><strong>{{ payments.CBE.account }}</strong><span>Account Name: {{
+                        payments.CBE.name }}</span></div>
+                <div class="payment-item"><b>Telebirr</b><strong>{{ payments.Telebirr.phone }}</strong><span>Account
+                        Name: {{ payments.Telebirr.name }}</span></div>
+            </div>
+        </section>
+
+        <!--<section class="visit-card"><div><span class="eyebrow">VISIT BISHE COFFEE</span><h2>Enjoy Coffee from the Birthplace of Coffee</h2><p>For reservations, delivery or more information, please contact Bishe Coffee directly.</p></div>
+<div class="visit-details"><span>☕ Premium Ethiopian Coffee</span><span>🕘 Open Daily</span><span>📍 Ethiopia</span></div></section>-->
+    </main>
+    <footer><img src="{{url_for('static',filename='bishe-logo.png')}}"><b>BISHE COFFEE</b><span>From the Birthplace of
+            Coffee</span><small>Premium Ethiopian Coffee Experience</small></footer>
+</body>
+
+</html>
